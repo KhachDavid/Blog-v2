@@ -1,0 +1,42 @@
+{% extends "blog/base.html" %}
+{% load anyname %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load get_client_name from anyname %}
+
+{% block content %}
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{ view.kwargs.pk|get_post_author_profile_img_url:'url'}}">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'user-posts' view.kwargs.pk|get_client_name:'author' %}">{{ view.kwargs.pk|get_client_name:'author' }}</a>
+          <small class="text-muted">{{ view.kwargs.pk|get_client_name:'date_posted' }}</small>
+            {% if object.author == user %}
+                <div>
+                <a class="btn-secondary btn-sm mt-1" href="{% url 'post-update' view.kwargs.pk|get_client_name:'id' %}">Update</a>
+                <a class="btn-danger btn-sm mt-1" href="{% url 'post-delete' view.kwargs.pk|get_client_name:'id' %}">Delete</a>
+                </div>
+            {% endif %}
+        </div>
+        <h2 class="article-title">{{ view.kwargs.pk|get_client_name:'title' }} </h2>
+        <p class="article-content">{{ view.kwargs.pk|get_client_name:'content'|safe }}</p>
+      </div>
+      <!--   Comments-->
+    </article>
+    <h2>Comments...</h2>
+
+    <div class="content-section">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">
+                 Add A Comment
+                </legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn-outline-info" type="submit">Post A Reply</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

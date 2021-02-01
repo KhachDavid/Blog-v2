@@ -1,0 +1,64 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+          <small class="text-muted">{{ object.date_posted }}</small>
+            {% if object.author == user %}
+                <div>
+                <a class="btn-secondary btn-sm mt-1" href="{% url 'post-update' object.id %}">Update</a>
+                <a class="btn-danger btn-sm mt-1" href="{% url 'post-delete' object.id %}">Delete</a>
+                </div>
+            {% endif %}
+        </div>
+        <h2 class="article-title">{{ object.title }} </h2>
+        <p class="article-content">{{ object.content|safe }}</p>
+      </div>
+
+        <hr>
+        <br/>
+        <form action="{% url 'like-post' post.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">
+                Upvote
+            </button>
+        </form>
+
+        <br/><br/><br/>
+        {{ post.comments.count }} Comments
+        <br/>
+        {{ post.likes.count }} Upvotes
+        <br/><br/>
+    </article>
+        <h2>Comments...</h2>
+
+        {% if not object.comments.all %}
+            <a href="{% url 'post-comment' object.id %}">Add A Reply</a>
+            <br/>
+            No Replies Yet...
+        {% else %}
+            <a href="{% url 'post-comment' object.id %}">Add A Reply
+            <br/><br/>
+            {% for comment in object.comments.all reversed %}
+                <article class="media content-section">
+                    <img class="rounded-circle article-img" src="{{ comment.name.profile.image.url }}">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="{% url 'user-posts' comment.name.username %}">{{ comment.name.username }}</a>
+                            {% if comment.name == user %}
+                                <div>
+                                    <a class="btn-secondary btn-sm mt-1" href="{% url 'comment-update' pk=comment.id %}">Update</a>
+                                    <a class="btn-danger btn-sm mt-1" href="{% url 'comment-delete' pk=comment.id %}">Delete</a>
+                                </div>
+                            {% endif %}
+
+                        </div>
+                        <p class="article-content">{{ comment.body }}</p>
+                    </div>
+                </article>
+            {% endfor %}
+        {% endif %}
+
+{% endblock content %}
