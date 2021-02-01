@@ -1,0 +1,13 @@
+django, django-crispy-forms, Pillow, signals, django-ckeditor
+
+Django~=2.1.7
+pip~=20.2.1
+wheel~=0.36.2
+pytz~=2020.5
+sqlparse~=0.4.1
+asgiref~=3.3.1
+numpy~=1.19.5
+signals~=0.0.2
+setuptools~=49.2.1
+django-crispy-forms~=1.11.0
+Pillow~=8.1.0
