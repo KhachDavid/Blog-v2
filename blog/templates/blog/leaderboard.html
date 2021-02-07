@@ -1,0 +1,30 @@
+{% extends "blog/base.html" %}
+
+{% load anyname %}
+{% load get_user_author_profile_img from anyname %}
+
+
+{% block content %}
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Անուն</th>
+        <th scope="col">Լավ Հարց</th>
+        <th scope="col">Լավ Պատասխան</th>
+      </tr>
+    </thead>
+    {% for karma, user, comment_karma in leaderboard %}
+        <tbody>
+        <tr>
+            <th scope="row"><img class="rounded-circle article-img" src="{{ user|get_user_author_profile_img:'url' }}"></th>
+            <td><a class="mr-2" href="{% url 'user-posts' user %}">{{ user }}</a></td>
+            <td>{{ karma }}</td>
+            <td>{{ comment_karma }}</td>
+        </tr>
+        </tbody>
+    {% endfor %}
+  </table>
+
+  {% endblock content %}

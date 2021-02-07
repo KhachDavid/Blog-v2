@@ -13,19 +13,27 @@
                 </div>
             {% endif %}
         </div>
-        <h2 class="article-title">{{ object.title }} </h2>
+        <h2 class="article-title">{{ object.title }} 
+            <small>{{ object.category }}</small>
+        </h2>
         <p class="article-content">{{ object.content|safe }}</p>
       </div>
-
         <hr>
         <br/>
-        <form action="{% url 'like-post' post.pk %}" method="post">
-            {% csrf_token %}
-            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">
-                Upvote
-            </button>
-        </form>
-
+        {% if user.is_authenticated %}
+            <form action="{% url 'like-post' post.pk %}" method="post">
+                {% csrf_token %}
+                {% if request.user in post.likes.all %}
+                    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">
+                        Downvote
+                    </button>
+                {% else %}
+                    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">
+                        Upvote
+                    </button>
+                {% endif %}
+            </form>
+        {% endif %}
         <br/><br/><br/>
         {{ post.comments.count }} Comments
         <br/>
@@ -57,6 +65,25 @@
                         </div>
                         <p class="article-content">{{ comment.body }}</p>
                     </div>
+
+                    <hr>
+                    <br/>
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'like-comment' comment.id %}" method="post">
+                            {% csrf_token %}
+                            {% if request.user in comment.likes.all %}
+                                <button type="submit" name="comment_id" value="{{ comment.id }}" class="btn btn-primary btn-sm">
+                                    Downvote
+                                </button>
+                            {% else %}
+                                <button type="submit" name="comment_id" value="{{ comment.id }}" class="btn btn-primary btn-sm">
+                                    Upvote
+                                </button>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                    <br/><br/><br/>
+                    {{ comment.likes.count }} Upvotes
                 </article>
             {% endfor %}
         {% endif %}

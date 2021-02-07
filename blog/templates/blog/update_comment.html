@@ -12,8 +12,9 @@
           <a class="mr-2" href="{% url 'user-posts' object.post.author.username %}">{{ object.post.author }}</a>
           <small class="text-muted">{{ object.post.date_posted }}</small>
         </div>
-        <h2 class="article-title">{{ object.post.title }} </h2>
-        <p class="article-content">{{ object.post.content }}</p>
+        <h2 class="article-title">{{ object.post.title }} <small> / {{ object.post.category }}</small></h2>
+        
+        <p class="article-content">{{ object.post.content|safe }}</p>
       </div>
         {{ object.post.comments.count }} Comments
     </article>

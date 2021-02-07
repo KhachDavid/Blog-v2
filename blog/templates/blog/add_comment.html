@@ -18,7 +18,10 @@
                 </div>
             {% endif %}
         </div>
-        <h2 class="article-title">{{ view.kwargs.pk|get_client_name:'title' }} </h2>
+        <h2 class="article-title">{{ view.kwargs.pk|get_client_name:'title' }} 
+            <small> / {{ view.kwargs.pk|get_client_name:'category' }}</small>
+        </h2>
+        
         <p class="article-content">{{ view.kwargs.pk|get_client_name:'content'|safe }}</p>
       </div>
       <!--   Comments-->

@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from users import views as user_views
 from django.conf.urls import (handler400, handler403, handler404, handler500)
 from blog import views as blog_views
+from blog.views import CategoryView
 
 
 urlpatterns = [
@@ -51,6 +52,7 @@ urlpatterns = [
          name='password_reset_complete'),
     path('', include('blog.urls')),
     path('ckeditor', include('ckeditor_uploader.urls')),
+    path('category/<str:cats>/', blog_views.CategoryView, name='category')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler400 = 'blog.views.handler400'
