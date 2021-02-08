@@ -6,7 +6,7 @@ from ckeditor_uploader import utils
 from ckeditor_uploader.utils import storage
 from ckeditor_uploader.views import get_upload_filename
 from django.core.checks.registry import registry
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -16,12 +16,15 @@ from django.views.generic import \
     (DetailView, ListView, CreateView, UpdateView, DeleteView)
 
 from mat import settings
-from .models import Post, Comment, Category
+from .models import Post, Comment, Category, Likes
+from notifications.models import Notification
 from users.forms import AddCommentForm, NewPostForm
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 from django import forms
 from ckeditor_uploader.fields import RichTextUploadingField
+
+from django.db.models import Count
 
 
 
@@ -38,10 +41,11 @@ def LikeView(request, pk):
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
         liked = False
+        Likes.objects.filter(user=request.user, post=post).delete()
     else:
         post.likes.add(request.user)
         liked = True
-
+        like = Likes.objects.create(user=request.user, post=post)
     return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
 
 
@@ -97,7 +101,26 @@ def count_comment_karma(user):
     for comment in comments:
         karma += comment.likes.count()
 
-    return karma
+    return karma   
+
+def DeleteNotification(request, pk):
+    user = request.user
+    try:
+        notif = Notification.objects.filter(id=pk).first()
+        notif.is_seen = True
+        notif.save()
+    except TypeError:
+        pass
+  
+    return HttpResponseRedirect(reverse('post-detail', args=[str(notif.post.id)]))
+
+
+def BestPosts(request):
+    posts = Post.objects.annotate(count=Count('likes')).order_by('-count')
+    context = {
+        'posts': posts
+    }
+    return render(request, 'blog/best_posts.html', context=context)
 
 
 class PostListView(ListView):
@@ -109,8 +132,24 @@ class PostListView(ListView):
 
     def get_context_data(self, *args, **kwargs):
         cat_menu = Category.objects.all()
+
+        try:
+            notifications = Notification.objects.filter(user=self.request.user).all()
+
+            not_counter = 0
+            for notification in notifications:
+                if not notification.is_seen and notification.user != notification.sender:
+                    not_counter += 1
+        except TypeError:
+            notification = []
+            context = super(PostListView, self).get_context_data(*args, **kwargs)
+            context["cat_menu"] = cat_menu
+            return context
+
         context = super(PostListView, self).get_context_data(*args, **kwargs)
         context["cat_menu"] = cat_menu
+        context["notifications"] = notifications
+        context["not_counter"] = not_counter
         return context
 
 
@@ -137,8 +176,24 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         cat_menu = Category.objects.all()
+
+        try:
+            notifications = Notification.objects.filter(user=self.request.user).all()
+
+            not_counter = 0
+            for notification in notifications:
+                if not notification.is_seen and notification.user != notification.sender:
+                    not_counter += 1
+        except TypeError:
+            notification = []
+            context = super(PostDetailView, self).get_context_data(*args, **kwargs)
+            context["cat_menu"] = cat_menu
+            return context
+
         context = super(PostDetailView, self).get_context_data(*args, **kwargs)
         context["cat_menu"] = cat_menu
+        context["notifications"] = notifications
+        context["not_counter"] = not_counter
         return context
 
 

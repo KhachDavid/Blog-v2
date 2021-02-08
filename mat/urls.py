@@ -22,7 +22,10 @@ from users import views as user_views
 from django.conf.urls import (handler400, handler403, handler404, handler500)
 from blog import views as blog_views
 from blog.views import CategoryView
-
+from notifications import views as notification_views
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+from ckeditor_uploader import views as ckeditor_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -51,8 +54,10 @@ urlpatterns = [
          ),
          name='password_reset_complete'),
     path('', include('blog.urls')),
-    path('ckeditor', include('ckeditor_uploader.urls')),
-    path('category/<str:cats>/', blog_views.CategoryView, name='category')
+    path('ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+    path('ckeditor/browse/', never_cache(login_required(ckeditor_views.browse)), name='ckeditor_browse'),
+    path('category/<str:cats>/', blog_views.CategoryView, name='category'),
+    path('notifications', notification_views.ShowNotifications, name='notifications')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler400 = 'blog.views.handler400'

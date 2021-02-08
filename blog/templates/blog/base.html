@@ -11,37 +11,53 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <!--  -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
 
     {% if title %}
-        <title>{{ title }}</title>
+        {% if not_counter %}
+          {% if not_counter > 0 %}
+            <title>{{ title }} - {{ not_counter }}</title>
+          {% elif not_counter == 0 %}
+            <title>{{ title }}</title>
+          {% endif %}  
+        {% else %}
+          <title>{{ title }}</title>
+        {% endif %}    
     {% else %}
-        <title>Մաթ Օգնություն</title>
+        {% if not_counter %}
+          {% if not_counter > 0 %}
+            <title>Մաթ Օգնություն - {{ not_counter }}</title>
+          {% elif not_counter == 0 %}
+            <title>Մաթ Օգնություն</title>
+          {% endif %}
+        {% else %}
+          <title>Մաթ Օգնություն</title>  
+        {% endif %}  
     {% endif %}
 </head>
 <body>
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
             <div class="container">
-              <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">Մաթ Օգնություն</a>
+              <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">Գլխավոր Էջ</a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                  <a class="nav-item nav-link" href="{% url 'blog-home' %}">Գլխավոր էջ</a>
-                  <a class="nav-item nav-link" href="{% url 'blog-about' %}">Մեր Մասին</a>
-                  
                   {% if cat_menu %}
                     <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Կատեգորիաներ
                       </a>
                       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% for cat in cat_menu %}
-                          <a class="dropdown-item" href="{% url 'category' cat %}
-                            ">{{ cat }}</a>
+                          <a class="dropdown-item" href="{% url 'category' cat %}">
+                            {{ cat }}
+                          </a>
                         {% endfor %}
                         <!--<div class="dropdown-divider"></div>-->
                       </div> 
@@ -51,9 +67,39 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{% url 'post-create' %}">Նոր Հարց</a>
-                       <a class="nav-item nav-link" href="{% url 'profile' %}">Պրոֆիլ</a>
-                       <a class="nav-item nav-link" href="{% url 'logout' %}">Դուրս Գալ</a>
+                      <a class="nav-item nav-link" href="{% url 'post-create' %}">Նոր Հարց</a>
+                      <a class="nav-item nav-link" href="{% url 'profile' %}">Պրոֆիլ</a>
+                      <a class="nav-item nav-link" href="{% url 'user-posts' request.user.username %}">Իմ Հարցերը</a>
+                      <a class="nav-item nav-link" href="{% url 'logout' %}">Դուրս Գալ</a>
+                      <div class="nav-item nav-link">
+                        <div class="icon" id="bell"> 
+                          <img src="https://i.imgur.com/AC7dgLA.png" alt=""> 
+                          {% if not_counter > 0 %}
+                            <span class="num">{{ not_counter }}</span>
+                          {% endif %}  
+                        </div>
+                        <div class="notifications" id="box">
+                          <h2>Notifications - <span>{{ not_counter }}</span></h2>
+                          {% for notification in notifications reversed %}
+                            {% if not notification.is_seen %}
+                              {% if not notification.sender == notification.user %}
+                                <a href = "{% url 'd-notification' notification.id %}" class="disabled">
+                                  <div class="notifications-item"> <img src="{{notification.sender.profile.image.url}}" alt="img">
+                                      <div class="text">
+                                          <h4>{{ notification.sender }}</h4>
+                                          {% if notification.notification_type == 1 %}
+                                            <p>{{ notification.sender }} օգտատերը կարծում է, որ ձեր {{ notification.text_preview }} հարցը օգտակար է</p>
+                                          {% elif notification.notification_type == 2 %}
+                                            <p>{{ notification.sender }} օգտատերը պատասխանել է ձեր հարցին․․․{{ notification.text_preview }}</p>
+                                          {% endif %}  
+                                      </div>
+                                  </div>
+                                </a>
+                              {% endif %}  
+                            {% endif %}
+                          {% endfor %}
+                        </div>  
+                      </div>
                     {% else %}
                        <a class="nav-item nav-link" href="{% url 'login' %}">Մուտք</a><a class="nav-item nav-link" href="{% url 'register' %}">Գրանցվել</a>
                     {% endif %}
@@ -80,8 +126,12 @@
                 <h3>Ցուցատախտակ</h3>
                 <br/>
                   <ul class="list-group">
-                    <li class="list-group-item list-group-item-light">Լավագույն հարցեր</li>
-                    <li class="list-group-item list-group-item-light">Հայտարարություններ</li>
+                    <li class="list-group-item list-group-item-light">
+                      <a href="{% url 'best-posts' %}">Լավագույն հարցեր</a>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                      <a href="http://127.0.0.1:8000/user/narek">Մրցույթներ</a>
+                    </li>
                     <li class="list-group-item list-group-item-light">
                       <a href="{% url 'leaderboard' %}">Լավագույնների Ցանկ</a>
                     </li>
@@ -92,10 +142,57 @@
         </div>
     </main>
 
+    <div class="container-fluid pb-0 mb-0 justify-content-center text-light ">
+      <footer>
+          <div class="row my-5 justify-content-center py-5">
+              <div class="col-11">
+                  <div class="row ">
+                      <div class="col-xl-8 col-md-4 col-sm-4 col-12 my-auto mx-auto a">
+                          <h3 class="text-muted mb-md-0 mb-5 bold-text">Մաթ Օգնություն</h3>
+                      </div>
+                      <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                          <h6 class="mb-3 mb-lg-4 bold-text "><b>Մենյու</b></h6>
+                          <ul class="list-unstyled">
+                              <a href="{% url 'blog-home' %}"><li>Գլխավոր Էջ</li></a>
+                              <a href="{% url 'blog-about' %}"><li>Մեր Մասին</li></a>
+                              <a href="https://www.youtube.com/c/MatOgnutyun/videos"><li>Տեսադարան</li></a>
+                          </ul>
+                      </div>
+                      <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                          <h6 class="mb-3 mb-lg-4 text-muted bold-text mt-sm-0 mt-5"><b>Կոնտակտային Տվյալներ</b></h6>
+                            <span><i class="fa fa-envelope" aria-hidden="true"></i></span> matognutyun@gmail.com</small>
+                      </div>
+                  </div>
+                  <div class="row ">
+                      <div class="col-xl-8 col-md-4 col-sm-4 col-auto my-md-0 mt-5 order-sm-1 order-3 align-self-end">
+                          <p class="social text-muted mb-0 pb-0 bold-text"> 
+                            <span class="mx-2">
+                              <a href="https://www.youtube.com/c/matognutyun"><i class="fa fa-youtube" aria-hidden="true"></i></a>
+                            </span> 
+                            <span class="mx-2">
+                              <a href="https://twitter.com/MatOgnutyun"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                            </span> 
+                            <span class="mx-2">
+                              <a href="https://www.instagram.com/matognutyun/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                            </span> 
+                          </p>
+                          <small class="rights">
+                            <span>&#174;</span> 2021 - Մաթ Օգնություն Բոլոր Իրավունքները Պաշտպանված են
+                          </small>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </footer>
+  </div>
+
    <!-- Optional JavaScript -->
    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   <script src=https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js></script>
+   <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js></script>
+   <script src="{% static 'blog/js/main.js' %}"></script>
 </body>
 </html>

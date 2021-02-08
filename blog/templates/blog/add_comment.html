@@ -26,19 +26,20 @@
       </div>
       <!--   Comments-->
     </article>
-    <h2>Comments...</h2>
+    <h2>Պատասխաններ...</h2>
 
     <div class="content-section">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">
-                 Add A Comment
+                 Ավելացնել Պատասխան
                 </legend>
+                {{ form.media }}
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn-outline-info" type="submit">Post A Reply</button>
+                <button class="btn-outline-info" type="submit">Պատասխաններ</button>
             </div>
         </form>
     </div>

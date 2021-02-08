@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView, \
-    CommentCreateView, CommentUpdateView, CommentDeleteView, LikeView, CommentLikeView, leaderboard
+    CommentCreateView, CommentUpdateView, CommentDeleteView, LikeView, CommentLikeView, leaderboard, DeleteNotification, \
+        BestPosts
 from . import views
 
 urlpatterns = [
@@ -16,5 +17,7 @@ urlpatterns = [
     path('about/', views.about, name='blog-about'),
     path('like/<int:pk>', LikeView, name='like-post'),
     path('like/comment/<int:pk>', CommentLikeView, name='like-comment'),
-    path('leaderboard', leaderboard, name='leaderboard')
+    path('leaderboard', leaderboard, name='leaderboard'),
+    path('dnotification/<int:pk>/', DeleteNotification, name='d-notification'),
+    path('best-posts', BestPosts, name='best-posts')
 ]

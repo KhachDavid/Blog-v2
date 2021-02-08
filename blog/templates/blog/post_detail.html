@@ -8,16 +8,16 @@
           <small class="text-muted">{{ object.date_posted }}</small>
             {% if object.author == user %}
                 <div>
-                <a class="btn-secondary btn-sm mt-1" href="{% url 'post-update' object.id %}">Update</a>
-                <a class="btn-danger btn-sm mt-1" href="{% url 'post-delete' object.id %}">Delete</a>
+                <a class="btn-secondary btn-sm mt-1" href="{% url 'post-update' object.id %}">Խմբագրել</a>
+                <a class="btn-danger btn-sm mt-1" href="{% url 'post-delete' object.id %}">Ջնջել</a>
                 </div>
             {% endif %}
         </div>
         <h2 class="article-title">{{ object.title }} 
-            <small>{{ object.category }}</small>
+            <small>/ {{ object.category }}</small>
         </h2>
         <p class="article-content">{{ object.content|safe }}</p>
-      </div>
+      </div>        
         <hr>
         <br/>
         {% if user.is_authenticated %}
@@ -25,29 +25,40 @@
                 {% csrf_token %}
                 {% if request.user in post.likes.all %}
                     <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">
-                        Downvote
+                        Հետ Հավանել
                     </button>
                 {% else %}
                     <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">
-                        Upvote
+                        Հավանել
                     </button>
                 {% endif %}
             </form>
         {% endif %}
-        <br/><br/><br/>
-        {{ post.comments.count }} Comments
-        <br/>
-        {{ post.likes.count }} Upvotes
-        <br/><br/>
     </article>
-        <h2>Comments...</h2>
+    <article class="media content-section">
+        {% if post.likes.count <= 1 %}
+          {% if post.comments.count > 1 %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխաններ</a>
+          {% else %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխան</a>  
+          {% endif %}  
+        {% else %}  
+          {% if post.comments.count > 1 %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխաններ</a>
+          {% else %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխան</a>  
+          {% endif %}  
+        {% endif %}  
+      </article>
+      <br/><br/>
+        <h2>Պատասխաններ...</h2>
 
         {% if not object.comments.all %}
-            <a href="{% url 'post-comment' object.id %}">Add A Reply</a>
+            <a href="{% url 'post-comment' object.id %}">Ավելացնել Պատասխան</a>
             <br/>
-            No Replies Yet...
+            Պատասխաններ չկան ։(
         {% else %}
-            <a href="{% url 'post-comment' object.id %}">Add A Reply
+            <a href="{% url 'post-comment' object.id %}">Ավելացնել Պատասխան
             <br/><br/>
             {% for comment in object.comments.all reversed %}
                 <article class="media content-section">
@@ -57,13 +68,13 @@
                             <a class="mr-2" href="{% url 'user-posts' comment.name.username %}">{{ comment.name.username }}</a>
                             {% if comment.name == user %}
                                 <div>
-                                    <a class="btn-secondary btn-sm mt-1" href="{% url 'comment-update' pk=comment.id %}">Update</a>
-                                    <a class="btn-danger btn-sm mt-1" href="{% url 'comment-delete' pk=comment.id %}">Delete</a>
+                                    <a class="btn-secondary btn-sm mt-1" href="{% url 'comment-update' pk=comment.id %}">Խմբագրել</a>
+                                    <a class="btn-danger btn-sm mt-1" href="{% url 'comment-delete' pk=comment.id %}">Ջնջել</a>
                                 </div>
                             {% endif %}
 
                         </div>
-                        <p class="article-content">{{ comment.body }}</p>
+                        <p class="article-content">{{ comment.body|safe }}</p>
                     </div>
 
                     <hr>
@@ -73,18 +84,24 @@
                             {% csrf_token %}
                             {% if request.user in comment.likes.all %}
                                 <button type="submit" name="comment_id" value="{{ comment.id }}" class="btn btn-primary btn-sm">
-                                    Downvote
+                                    Հետ Հավանել
                                 </button>
                             {% else %}
                                 <button type="submit" name="comment_id" value="{{ comment.id }}" class="btn btn-primary btn-sm">
-                                    Upvote
+                                    Հավանել
                                 </button>
                             {% endif %}
                         </form>
                     {% endif %}
-                    <br/><br/><br/>
-                    {{ comment.likes.count }} Upvotes
                 </article>
+                <article class="media content-section">
+                    {% if comment.likes.count <= 1 %}
+                      <a class="comment" href="{% url 'post-detail' post.id %}">{{ comment.likes.count }} հոգի հավանել է</a>   
+                    {% else %}  
+                      <a class="comment" href="{% url 'post-detail' post.id %}">{{ comment.likes.count }} հոգի հավանել են</a>
+                    {% endif %}  
+                </article>
+                <br/><br/>
             {% endfor %}
         {% endif %}
 

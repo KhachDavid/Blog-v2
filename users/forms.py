@@ -38,7 +38,7 @@ class AddCommentForm(forms.ModelForm):
         fields = ['body']
 
         widgets = {
-            'body': forms.Textarea(attrs={'class': 'form-control'})
+            'body': RichTextUploadingField(blank=True, null=True)
         }
 
 

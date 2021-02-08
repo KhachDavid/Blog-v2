@@ -16,7 +16,7 @@
         
         <p class="article-content">{{ object.post.content|safe }}</p>
       </div>
-        {{ object.post.comments.count }} Comments
+        {{ object.post.comments.count }} Պատասխաններ
     </article>
 
     <div class="content-section">
@@ -24,12 +24,13 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">
-                 Add A Comment
+                 Ավելացնել Պատասխան
                 </legend>
+                {{ form.media }}
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn-outline-info" type="submit">Post A Reply</button>
+                <button class="btn-outline-info" type="submit">Պատասխան</button>
             </div>
         </form>
     </div>
