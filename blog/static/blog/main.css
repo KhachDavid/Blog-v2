@@ -122,7 +122,6 @@ a.disabled
   pointer-events: none;
 }
 
-
 .icon {
   cursor: pointer;
   margin-right: 2px;
@@ -145,7 +144,11 @@ a.disabled
 }
 
 .icon:hover {
-  opacity: .7
+  opacity: .7;
+}
+
+.icon img:hover {
+  
 }
 
 
@@ -322,7 +325,6 @@ h3 {
   font-size: 32px;
 }
 
-#dislike-button {
-  background-color: red !important;
-  border-color:red !important;
+#clickable-article:hover {
+  cursor: pointer;
 }
