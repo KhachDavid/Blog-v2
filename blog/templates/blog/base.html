@@ -29,12 +29,12 @@
     {% else %}
         {% if not_counter %}
           {% if not_counter > 0 %}
-            <title>Մաթ Օգնություն - {{ not_counter }}</title>
+            <title>Տնային - {{ not_counter }}</title>
           {% elif not_counter == 0 %}
-            <title>Մաթ Օգնություն</title>
+            <title>Տնային</title>
           {% endif %}
         {% else %}
-          <title>Մաթ Օգնություն</title>  
+          <title>Տնային</title>  
         {% endif %}  
     {% endif %}
 </head>
@@ -79,7 +79,11 @@
                           {% endif %}  
                         </div>
                         <div class="notifications" id="box">
-                          <h2>Notifications - <span>{{ not_counter }}</span></h2>
+                          {% if not_counter %}
+                            <h2>Ծանուցումներ - <span>{{ not_counter }}</span></h2>
+                          {% else %}
+                            <h2>Ծանուցումներ - <span>0</span></h2> 
+                          {% endif %}  
                           {% for notification in notifications reversed %}
                             {% if not notification.is_seen %}
                               {% if not notification.sender == notification.user %}
@@ -193,6 +197,7 @@
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
    <script src=https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js></script>
    <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
    <script src="{% static 'blog/js/main.js' %}"></script>
 </body>
 </html>

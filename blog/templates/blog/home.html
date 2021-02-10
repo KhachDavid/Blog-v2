@@ -1,18 +1,16 @@
 {% extends "blog/base.html" %}
 {% block content %}
     {% for post in posts %}
-      <article class="media content-section">
+      <section class="media content-section" id="clickable-article" data-submit-url="{% url 'post-detail' post.id %}">
           <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
               <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-              <small class="text-muted">{{ post.date_posted }}</small>
+              <small class="text-muted">{{ post.date_posted }} | {{ post.category }}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }} </a><small>
-              / {{ post.category }}
-            </small></h2>
+            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }} </a></h2>
           </div>
-      </article>
+        </section>
 
       <article class="media content-section">
         {% if post.likes.count <= 1 %}

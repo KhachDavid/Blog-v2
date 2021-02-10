@@ -2,30 +2,23 @@
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="content-section">
-    <form method="POST">
-        <input type="hidden" name="csrfmiddlewaretoken" value="7IlEXGKauNNfoA8M8kg6X74Nz1z326ZuJkvh5riIFKcC2Ebnx9JqDYmthDXd8cwK">
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">
-                Գրանցվիր հիմա
-            </legend>
-            
-
-<div id="div_id_username" class="form-group"> <label for="id_username" class=" requiredField">
-            Ծածկանուն<span class="asteriskField">*</span> </label> <div class=""> <input type="text" name="username" maxlength="150" autofocus class="textinput textInput form-control" required id="id_username"> <small id="hint_id_username" class="form-text text-muted">Պահանջներ։ 150 տառ կամ ավելի քիչ. Կարող է Պարունակել Տառեր, Թվեր և @/./+/-/_</small> </div> </div> <div id="div_id_email" class="form-group"> <label for="id_email" class=" requiredField">
-            Էլեկտրոնային Հասցե<span class="asteriskField">*</span> </label> <div class=""> <input type="email" name="email" class="emailinput form-control" required id="id_email"> </div> </div> <div id="div_id_password1" class="form-group"> <label for="id_password1" class=" requiredField">
-            Գաղտնաբառ<span class="asteriskField">*</span> </label> <div class=""> <input type="password" name="password1" autocomplete="new-password" class="textinput textInput form-control" required id="id_password1"> <small id="hint_id_password1" class="form-text text-muted"><ul><li>Ձեր Գաղտնաբառը Չի Կարող Նման Լինել Ձեր Անձնական Ինֆորմացիային</li><li>Ձեր Գաղտնաբառը Պետք է Ունենա Առնվազն 8 Տառ</li><li>Ձեր Գաղտնաբառը Չպետք է Լինի Հաճախ Օգտագործված (Օր․։ abc12345678)</li><li>Ձեր Գաղտնաբառը Չպետք է Պարունակի Միայն Թվեր</li></ul></small> </div> </div> <div id="div_id_password2" class="form-group"> <label for="id_password2" class=" requiredField">
-            Հաստատել Գաղտնաբառը<span class="asteriskField">*</span> </label> <div class=""> <input type="password" name="password2" autocomplete="new-password" class="textinput textInput form-control" required id="id_password2"> <small id="hint_id_password2" class="form-text text-muted">Մուտքագրեք Նույն Գաղտնաբառը Հաստատելու Համար</small> </div> </div>
-
-        </fieldset>
-        <div class="form-group">
-            <button class="btn-outline-info" type="submit">Գրանցվել</button>
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">
+                    Գրանցվիր հիմա
+                </legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn-outline-info" type="submit">Գրանցվել</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Արդեն ունեք հաշիվ? <a class="ml-2" href="{% url 'login' %}">Մուտք</a>
+            </small>
         </div>
-    </form>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            Ունե՞ս հաշվեհամար<a class="ml-2" href="/login/">Մուտք</a>
-        </small>
     </div>
-</div>
 {% endblock content %}

@@ -1,0 +1,29 @@
+<article class="media content-section">
+{% if user.is_authenticated %}
+    <form method="post" id="like-form">
+        {% csrf_token %}
+        {% if request.user in post.likes.all %}
+            <button type="submit" name="post_id" id="like" value="{{ post.id }}" class="btn btn-danger btn-sm">
+                Չհավանել
+            </button>   
+        {% else %}
+            <button type="submit" name="post_id" id="like" value="{{ post.id }}" class="btn btn-primary btn-sm" >
+                Հավանել
+            </button>
+        {% endif %}
+    </form>
+    {% if post.likes.count <= 1 %}
+          {% if post.comments.count > 1 %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխաններ</a>
+          {% else %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխան</a>  
+          {% endif %}  
+        {% else %}  
+          {% if post.comments.count > 1 %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխաններ</a>
+          {% else %}
+            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխան</a>  
+          {% endif %}  
+        {% endif %}  
+{% endif %}
+</article>

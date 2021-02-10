@@ -25,7 +25,11 @@ from django import forms
 from ckeditor_uploader.fields import RichTextUploadingField
 
 from django.db.models import Count
+from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
 
+
+import json
 
 
 def home(request):
@@ -35,8 +39,9 @@ def home(request):
     return render(request, 'blog/home.html', context)
 
 
-def LikeView(request, pk):
-    post = get_object_or_404(Post, id=request.POST.get('post_id'))
+@csrf_exempt
+def like_post(request, pk):
+    post = get_object_or_404(Post, id=request.POST.get('id'))
     liked = False
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
@@ -46,11 +51,22 @@ def LikeView(request, pk):
         post.likes.add(request.user)
         liked = True
         like = Likes.objects.create(user=request.user, post=post)
-    return HttpResponseRedirect(reverse('post-detail', args=[str(pk)]))
+
+    context = {
+        'post': post,
+        'is_liked': liked,
+        'total_likes': post.likes.count()
+    }
+
+    if request.is_ajax():
+        html = render_to_string('blog/like_section.html', context, request=request)
+        return JsonResponse({'form': html})
 
 
-def CommentLikeView(request, pk):
-    comment = get_object_or_404(Comment, id=request.POST.get('comment_id'))
+@csrf_exempt
+def like_comment(request, pk, pk1):
+    print(pk1)
+    comment = get_object_or_404(Comment, id=request.POST.get('id'))
     liked = False
     if comment.likes.filter(id=request.user.id).exists():
         comment.likes.remove(request.user)
@@ -59,7 +75,19 @@ def CommentLikeView(request, pk):
         comment.likes.add(request.user)
         liked = True
 
-    return HttpResponseRedirect(reverse('post-detail', args=[str(Comment.objects.filter(id=pk).first().post.id)]))
+    context = {
+        #'comment': comment.serializable_value,
+        'is_liked': liked,
+        'total_likes': comment.likes.count()
+    }
+
+    # if request.is_ajax():
+    #   html = render_to_string('blog/like_section_comment.html', context, request=request)
+    #   return JsonResponse({'form': html})
+    if request.method == 'POST':
+        return HttpResponse(
+            json.dumps(context),
+            content_type="application/json")
 
 
 def CategoryView(request, cats):

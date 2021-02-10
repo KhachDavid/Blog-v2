@@ -11,15 +11,37 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
+
 
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created! You are now able to log in ')
-            return redirect('login')
+
+            email = form.cleaned_data.get('email')
+            emails = User.objects.filter(email=email).first()
+            username11 = User.objects.filter(username=username).first()
+            if isinstance(emails, type(None)):
+                messages.success(request, f'{username}, ձեր հաշիվը ստեղծված է։ Դուք կարող եք մուտք գործել!')
+                form.save()
+                return redirect('login')
+            args = {}
+            email_error_message = "Այս Էլեկտրոնային հասցեն զբաղված է"
+
+            if form.cleaned_data.get('password1') != form.cleaned_data.get('password2'):
+                args['password_error_message'] = 'Գաղտնաբառերը չեն համընկնում'
+
+            if not isinstance(emails, type(None)):
+                args['email_error_message'] = email_error_message
+
+            if not isinstance(username11, type(None)):
+                args['username_error_message'] = f'{username} ծածկանունը զբաղված է'
+
+            form = UserRegisterForm()
+            args['form'] = form
+            return render(request, 'users/register.html', args)
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
