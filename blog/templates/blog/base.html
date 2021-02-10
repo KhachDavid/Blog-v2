@@ -73,7 +73,7 @@
                       <a class="nav-item nav-link" href="{% url 'logout' %}">Դուրս Գալ</a>
                       <div class="nav-item nav-link">
                         <div class="icon" id="bell"> 
-                          <img src="https://i.imgur.com/AC7dgLA.png" alt=""> 
+                          <img src="{% static 'blog/img/bell.png' %}" alt="">
                           {% if not_counter > 0 %}
                             <span class="num">{{ not_counter }}</span>
                           {% endif %}  
@@ -134,7 +134,7 @@
                       <a href="{% url 'best-posts' %}">Լավագույն հարցեր</a>
                     </li>
                     <li class="list-group-item list-group-item-light">
-                      <a href="http://127.0.0.1:8000/user/narek">Մրցույթներ</a>
+                      <a href="http://127.0.0.1:8000/user/tnayin.am">Մրցույթներ</a>
                     </li>
                     <li class="list-group-item list-group-item-light">
                       <a href="{% url 'leaderboard' %}">Լավագույնների Ցանկ</a>

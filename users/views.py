@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.decorators import  login_required
+from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.edit import FormView
@@ -41,10 +41,12 @@ def register(request):
 
             form = UserRegisterForm()
             args['form'] = form
-            return render(request, 'users/register.html', args)
+            messages.warning(request, f'{email}, էլեկտրոնային հասցեն զբաղված է!')
+            return redirect('register')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
+
 
 @login_required
 def profile(request):
