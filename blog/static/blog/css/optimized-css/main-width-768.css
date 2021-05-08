@@ -1,0 +1,6 @@
+@media all and (width: 768px) {
+    #billboard {
+      margin: 4rem 4rem 0rem 41rem;
+      padding: 1rem 0rem 1rem 0.5rem;
+    }
+}

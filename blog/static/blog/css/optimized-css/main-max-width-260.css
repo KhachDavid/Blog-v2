@@ -1,0 +1,5 @@
+@media all and (max-device-width: 260px) {
+    div[id^=like-buttons-] {
+        padding-left: 13.2rem !important;
+    }
+}

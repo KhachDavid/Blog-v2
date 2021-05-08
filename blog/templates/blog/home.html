@@ -1,54 +1,126 @@
 {% extends "blog/base.html" %}
-{% block content %}
-    {% for post in posts %}
-      <section class="media content-section" id="clickable-article" data-submit-url="{% url 'post-detail' post.id %}">
-          <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-              <small class="text-muted">{{ post.date_posted }} | {{ post.category }}</small>
-            </div>
-            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }} </a></h2>
-          </div>
-        </section>
+{% load anyname %}
 
-      <article class="media content-section">
-        {% if post.likes.count <= 1 %}
-          {% if post.comments.count > 1 %}
-            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխաններ</a>
-          {% else %}
-            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխան</a>  
-          {% endif %}  
-        {% else %}  
-          {% if post.comments.count > 1 %}
-            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխաններ</a>
-          {% else %}
-            <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխան</a>  
-          {% endif %}  
-        {% endif %}  
-      </article>
+{% block content %}
+    <div>
+      <!-- TODO - Create a new filter bar -->
+      A new filter bar
+    </div>
+    {% for post in posts %}
+        <div class="like-and-button">
+          <div id="like-buttons-{{post.id}}">
+            {% if user.is_authenticated %}
+
+              <!-- Distinguish the style based on whether the user liked 
+                   the current post or not -->
+              {% if user|check_if_user_liked:post %}
+                <div>
+                  <i class="vote upvote-active" id="like-dislike-button-{{ post.id }}-like" 
+                  aria-role="presentation" aria-label="HUNDRED POINTS SYMBOL"
+                  onclick="upvoteClick('{{post.pk}}')"></i>             
+                </div>
+              {% else %}  
+                <div>
+                  <i class="vote upvote" id="like-dislike-button-{{ post.id }}-like"
+                  aria-role="presentation" aria-label="THUMBS UP SIGN" 
+                  onclick="upvoteClick('{{post.pk}}')"></i>
+                </div>
+              {% endif %}  
+                
+              <!-- Show the current like minus dislike count between like and 
+                   dislike buttons -->
+              <div class="like-count-{{post.pk}}" style="color: whitesmoke">
+                {{ post.likes.count|subtract:post.dislikes.count }}
+              </div>
+              
+              <!-- Distinguish the style based on whether the user disliked 
+                   the current post or not -->
+              {% if user|check_if_user_disliked:post %}
+                <div>
+                  <i class="vote downvote-active" id="like-dislike-button-{{ post.id }}-dislike"
+                  aria-role="presentation" aria-label="ANGRY FACE"
+                  onclick="downvoteClick('{{post.pk}}')"></i>
+                </div>
+
+              {% else %}
+                <div>
+                  <i class="vote downvote" id="like-dislike-button-{{ post.id }}-dislike"
+                  aria-role="presentation" aria-label="THUMBS DOWN SIGN" 
+                  onclick="downvoteClick('{{post.pk}}')"></i>
+                </div>
+              {% endif %}
+
+            <!-- If user is not signed in -->  
+            {% else %} 
+            
+              <div>
+                <i class="em em---1" id="like-dislike-button-" 
+                aria-role="presentation" aria-label="THUMBS UP SIGN"></i>
+              </div>
+
+              <div class="like-count-{{post.pk}}" style="color: whitesmoke">
+                {{ post.likes.count|subtract:post.dislikes.count }}
+              </div>
+
+              <div>
+                <i class="em em--1" id="like-dislike-button-"
+                aria-role="presentation" aria-label="THUMBS DOWN SIGN"></i>
+              </div>
+
+              <!-- The Modal -->
+              <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <p class="modal-par">
+                    <a href="{% url 'register' %}">Գրանցվեք հավանելու համար</a>
+                  </p>
+                </div>
+
+              </div>
+
+            {% endif %}  
+          </div>
+            <section class="media content-section" id="clickable-article" 
+                      data-submit-url="{% url 'post-detail' post.id %}">
+
+                <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+                <div class="media-body">
+                  <div class="article-metadata">
+                    <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_posted }} | {{ post.category }}</small>
+                  </div>
+                  <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }} </a></h2>
+                  <hr>
+                  <div class="post-preview">
+                    <h7>{{ post.pk|get_content_preview|safe }}<a href="{% url 'post-detail' post.id %}">...Տեսնել Ավելին</a></h7>
+                  </div>
+                </div>
+            </section>
+        </div>
       <br/><br/>
     {% endfor %}
     
     {% if is_paginated %}
-
+      <div>
       {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1">Առաջին</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Նախորդ</a>
+        <a class="btn btn-outline-info mb-4" id="pagination-buttons" href="?page=1">Առաջին</a>
+        <a class="btn btn-outline-info mb-4" id="pagination-buttons" href="?page={{ page_obj.previous_page_number }}">Նախորդ</a>
       {% endif %}
 
       {% for num in page_obj.paginator.page_range %}
         {% if page_obj.number == num %}
-           <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+           <a class="btn btn-info mb-4" id="pagination-buttons" href="?page={{ num }}">{{ num }}</a>
         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            <a class="btn btn-outline-info mb-4" id="pagination-buttons" href="?page={{ num }}">{{ num }}</a>
         {% endif %}
       {% endfor %}
 
-         {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Հաջորդ</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Վերջին</a>
+      {% if page_obj.has_next %}
+        <a class="btn btn-outline-info mb-4" id="pagination-buttons" href="?page={{ page_obj.next_page_number }}">Հաջորդ</a>
+        <a class="btn btn-outline-info mb-4" id="pagination-buttons" href="?page={{ page_obj.paginator.num_pages }}">Վերջին</a>
       {% endif %}
-
+      </div>
     {% endif %}
 {% endblock content %}

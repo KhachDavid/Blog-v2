@@ -1,6 +1,16 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
+
+{% block extra_head %}
+	<style>
+		#id_title {
+			color: white !important;
+		}
+
+	</style>
+{% endblock %}
+
 {% block content %}
     <div class="content-section">
         <form method="POST">
@@ -14,7 +24,7 @@
             
             </fieldset>
             <div class="form-group">
-                <button class="btn-outline-info" type="submit">Հրապարակել Հարցը</button>
+                <button name="submit-button" class="btn-outline-info" type="submit">Հրապարակել Հարցը</button>
             </div>
         </form>
     </div>

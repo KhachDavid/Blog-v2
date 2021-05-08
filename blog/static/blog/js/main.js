@@ -1,7 +1,23 @@
+/**
+ * @author David Khachatryan
+ * @copyright Copyright 2021, Mat Ognutyun
+ * @license GPL
+ * @version 2.0.0
+ * @host David Khachatryan
+ * @email dkhachatryan@wisc.edu
+ * @status production
+ */
+
 window.CSRF_TOKEN = "{{ csrf_token }}";
 
+/**
+ * 
+ */
 $(document).ready(function(){
-    var down = true;
+    $('#box').css('height','0px');
+    $('#box').css('opacity','0');
+    disable();
+    var down = false;
     $('#bell').click(function(e){
         var color = $(this).text();
         if(down) {
@@ -20,14 +36,23 @@ $(document).ready(function(){
     });
 });
 
+/**
+ * 
+ */
 function enable() {
     $('#disabled').css('pointer-events', 'inherit');
 }
 
+/**
+ * 
+ */
 function disable() {
     $('#disabled').css('pointer-events', 'none');
 }
 
+/**
+ * 
+ */
 $(document).ready(function(event){
   // once like is clicked
   $(document).on('click', '#like', function(event){
@@ -39,24 +64,35 @@ $(document).ready(function(event){
       url: "like",
       data: {'id': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
       dataType: 'json',
+
+      /**
+       * 
+       * @param {*} response 
+       */
       success: function(response) {
         $('#like-section').html(response['form'])
-        console.log($('#like-section').html(response['form']));
       },
+
+      /**
+       * 
+       * @param {*} rs 
+       * @param {*} e 
+       */
       error: function(rs, e) {
-        console.log(rs.responseText);
+    
       },
     });
   });
 });
 
+/**
+ * 
+ */
 $(document).ready(function(event){
   $(document).on('click', '*[name="comment_id"]', function(event){
     event.preventDefault();
     var pk1 = $(this).attr('value'); // comment id
     var pk = $(this).attr('data-value'); // post id
-    console.log(pk + " post id")
-    console.log(pk1 + " comment id");
     var idname = '#comment-' + pk1;
 
     var buttonid = '#like-comment-' + pk1;
@@ -68,6 +104,11 @@ $(document).ready(function(event){
       url: $(this).attr('data-submit-url'),
       data: {'id': pk1, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
       dataType: 'json',
+
+      /**
+       * 
+       * @param {*} json 
+       */
       success: function(json) {
         if (json.total_likes < 2) {
           $(idname).empty().prepend(json.total_likes + " հոգի հավանել է");
@@ -86,17 +127,166 @@ $(document).ready(function(event){
           $(buttonid).removeClass("btn-primary").addClass("btn-danger");
         }
       },
+
+      /**
+       * 
+       */
       error: function(rs, e) {
-        console.log(rs.responseText);
+      
       },
     });
   });
 });
 
+/**
+ * 
+ */
 $(document).ready(function() {
   $(document).on('click', '#clickable-article', function(event){
     var url = $(this).attr('data-submit-url');
-    console.log(url);
     location.href=url;
   });
 });
+
+
+/**
+ * 
+ * @param {*} post_pk 
+ */
+function upvoteClick(post_pk) {
+  var current_element = document.getElementById("like-dislike-button-" + post_pk + "-like");
+  current_element.style.animation = "";
+  $.ajax({
+
+    type: 'POST',
+    url: "post/" + post_pk + "/like",
+    data: {'id': post_pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+    dataType: 'json',
+
+    /**
+     * 
+     * @param {*} json 
+     */
+    success: function(json) {
+      var like_count = document.querySelectorAll(".like-count-" + post_pk);
+
+      like_count.forEach( (b) => {
+        b.innerHTML = json['total_likes'] - json['total_dislikes'];
+
+        // change the emoji to 100%
+
+        //current_element.className = "animate-like-buttons";
+        toggleLike(current_element);
+        initializeDislike(document.getElementById("like-dislike-button-" + post_pk + "-dislike"));
+        current_element.style.animation = "like 0.8s forwards";
+
+      });
+    },
+
+    /**
+     * 
+     * @param {*} rs 
+     * @param {*} e 
+     */
+    error: function(rs, e) {
+      var like_count = document.querySelectorAll(".like-count-" + post_pk);
+
+      like_count.forEach( (b) => {
+        b.innerHTML = 0;
+      });
+    },
+  });
+}
+
+/**
+ * 
+ * @param {*} post_pk 
+ */
+function downvoteClick(post_pk) {
+  var current_element = document.getElementById("like-dislike-button-" + post_pk + "-dislike");
+  current_element.style.animation = "";
+
+  $.ajax({
+    type: 'POST',
+    url: "post/" + post_pk + "/dislike",
+    data: {'id': post_pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+    dataType: 'json',
+
+    /**
+     * 
+     * @param {*} json 
+     */
+    success: function(json) {
+      var like_count = document.querySelectorAll(".like-count-" + post_pk);
+
+      like_count.forEach( (b) => {
+        b.innerHTML = json['total_likes'] - json['total_dislikes'];
+      });
+
+      // change the emoji to the like button
+      toggleDislike(current_element);
+        
+      initializeLike(document.getElementById("like-dislike-button-" + post_pk + "-like"));
+      current_element.style.animation = "like 0.8s forwards";
+    },
+
+    /**
+     * 
+     * @param {*} rs 
+     * @param {*} e 
+     */
+    error: function(rs, e) {
+      var like_count = document.querySelectorAll(".like-count-" + post_pk);
+
+      like_count.forEach( (b) => {
+        b.innerHTML = 0;
+      });
+    },
+
+  });
+}
+
+const like_state_class = "vote upvote";
+const liked_state_class = "vote upvote-active";
+
+/**
+ * 
+ * @param {*} current_element 
+ */
+function toggleLike(current_element) {
+  current_element.className === like_state_class ?
+                                current_element.className = liked_state_class :
+                                current_element.className = like_state_class;
+
+}
+
+const dislike_state_class = "vote downvote";
+const disliked_state_class = "vote downvote-active";
+
+/**
+ * 
+ * @param {*} current_element 
+ */
+function toggleDislike(current_element) {
+  current_element.className === dislike_state_class ?
+                                current_element.className = disliked_state_class :
+                                current_element.className = dislike_state_class;
+}
+
+/**
+ * 
+ * @param {*} current_element 
+ */
+function initializeLike(current_element) {
+  current_element.className = like_state_class;
+  current_element.style.animation = "";
+}
+
+/**
+ * 
+ * @param {*} current_element 
+ */
+function initializeDislike(current_element) {
+  current_element.className = dislike_state_class;
+  current_element.style.animation = "";
+}

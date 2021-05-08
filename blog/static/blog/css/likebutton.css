@@ -1,0 +1,38 @@
+/**
+ * @author David Khachatryan
+ * @copyright Copyright 2021, Mat Ognutyun
+ * @license GPL
+ * @version 2.0.0
+ * @host David Khachatryan
+ * @email dkhachatryan@wisc.edu
+ * @status production
+ */
+
+#pagination-buttons {
+	padding: 1.5rem;
+	margin-right: 1rem;
+	border-radius: 1rem;
+}
+
+#pagination-buttons:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+#pagination-buttons:active {
+	transform: translateY(-1px);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+#pagination-buttons::after {			
+ 	content: "";
+	display: inline-block;
+	height: 100%;
+	width: 100%;
+	border-radius: 100px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	transition: all .4s;
+}

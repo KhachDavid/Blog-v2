@@ -1,4 +1,14 @@
 {% extends "blog/base.html" %}
+
+{% block extra_head %}
+	<meta name="description" content="{{ object.title  }}">
+	<meta name="author" content="{{ object.author }}">
+{% endblock %}
+
+{% block title %} 
+	{{ object.title }} 
+{% endblock %}
+
 {% block content %}
     <article class="media content-section">
       <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
@@ -6,23 +16,23 @@
         <div class="article-metadata">
           <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
           <small class="text-muted">{{ object.date_posted }} | {{ object.category }}</small>
-            {% if object.author == user %}
-                <div>
+          {% if object.author == user %}
+            <div>
                 <a class="btn-secondary btn-sm mt-1" href="{% url 'post-update' object.id %}">Խմբագրել</a>
                 <a class="btn-danger btn-sm mt-1" href="{% url 'post-delete' object.id %}">Ջնջել</a>
-                </div>
-            {% endif %}
+            </div>
+          {% endif %}
         </div>
         <h2 class="article-title">{{ object.title }}</h2>
         <p class="article-content">{{ object.content|safe }}</p>
       </div>        
-        <hr>
-        <br/>
+      <hr>
+      <br/>
     </article>
 
-        <div id="like-section">
-          {% include 'blog/like_section.html' %}
-        </div>
+      <div id="like-section">
+        {% include 'blog/like_section.html' %}
+      </div>
         
       <br/><br/>
         <h2>Պատասխաններ...</h2>
@@ -61,22 +71,41 @@
                         <form id="like-form-comment" method="post">
                             {% csrf_token %}
                             {% if request.user in comment.likes.all %}
-                                <button type="submit" id="like-comment-{{ comment.id }}" name="comment_id" data-value="{{ comment.post.id }}" value="{{ comment.id }}" data-submit-url="{% url 'like_comment' comment.post.id comment.id %}" class="btn btn-danger btn-sm">
-                                    Չհավանել
+                                <button type="submit" id="like-comment-{{ comment.id }}"
+					                    name="comment_id" data-value="{{ comment.post.id }}" 
+					                    value="{{ comment.id }}" 
+					                    data-submit-url="{% url 'like_comment' comment.post.id comment.id %}" 
+                                        class="btn btn-danger btn-sm">
+                                    
+                                    <div class="hand">
+                                        <div class="thumb"></div>
+                                    </div>
+                                    <span>Չհավանել<span></span></span>
                                 </button>
                             {% else %}
-                                <button type="submit" id="like-comment-{{ comment.id }}" name="comment_id" data-value="{{ comment.post.id }}" value="{{ comment.id }}" data-submit-url="{% url 'like_comment' comment.post.id comment.id %}" class="btn btn-primary btn-sm">
-                                    Հավանել
+                                <button type="submit" id="like-comment-{{ comment.id }}" 
+					                    name="comment_id" data-value="{{ comment.post.id }}" 
+					                    value="{{ comment.id }}" 
+					                    data-submit-url="{% url 'like_comment' comment.post.id comment.id %}" 
+                                        class="btn btn-primary btn-sm">
+
+                                    <div class="hand">
+                                        <div class="thumb"></div>
+                                    </div>
+				    	            <span>Հավանել<span></span></span>
                                 </button>
                             {% endif %}
                         </form>
                     {% endif %}
+
                     {% if comment.likes.count <= 1 %}
-                      <a class="comment" id="comment-{{ comment.id }}" href="{% url 'post-detail' comment.post.id %}">{{ comment.likes.count }} հոգի հավանել է</a>   
+                      <a class="comment" id="comment-{{ comment.id }}" 
+			             href="{% url 'post-detail' comment.post.id %}">{{ comment.likes.count }} հոգի հավանել է</a>   
                     {% else %}  
-                      <a class="comment" id="comment-{{ comment.id }}" href="{% url 'post-detail' comment.post.id %}">{{ comment.likes.count }} հոգի հավանել են</a>
+                      <a class="comment" id="comment-{{ comment.id }}" 
+			             href="{% url 'post-detail' comment.post.id %}">{{ comment.likes.count }} հոգի հավանել են</a>
                     {% endif %}  
-                </article>
+                  </article>
                 </div>
                 <br/><br/>
             {% endfor %} 

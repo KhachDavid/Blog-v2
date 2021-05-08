@@ -1,9 +1,24 @@
+<!-- 
+
+__author__ = "David Khachatryan"
+__copyright__ = "Copyright 2021, Mat Ognutyun"
+__credits__ = None
+__license__ = "GPL"
+__version__ = "2.0.0"
+__maintainer__ = "David Khachatryan"
+__email__ = "dkhachatryan@wisc.edu"
+__status__ = "Production" 
+
+@NOTE - THIS APPLIES TO EVERY HTML FILE IN THIS WEBSITE
+
+-->
+
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hy">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=5.0, minimum-scale=0.35">
 
     <!-- Tab Logo -->
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'blog/img/icon.png' %}" />
@@ -13,8 +28,39 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
     <!-- Main CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/likebutton.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/dark-mode.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/footer.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/video-carousel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/modal.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/upvote-downvote.css' %}">
+
+    <!-- CSS for different sized screens -->
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-min-width-992.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-992.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-768.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-280.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-839.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-694.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-537.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-402.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-353.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-330.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-310.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-282.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-260.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-240.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-220.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-max-width-200.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/optimized-css/main-width-768.css' %}">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Emojis -->
+    <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
 
     {% if title %}
         {% if not_counter %}
@@ -26,17 +72,29 @@
         {% else %}
           <title>{{ title }}</title>
         {% endif %}    
+    {% elif not_counter %}
+        {% if not_counter > 0 %}
+          <title>Տնային - {{ not_counter }}</title>
+        {% elif not_counter == 0 %}
+          <title>Տնային</title>
+        {% endif %}
     {% else %}
-        {% if not_counter %}
-          {% if not_counter > 0 %}
-            <title>Տնային - {{ not_counter }}</title>
-          {% elif not_counter == 0 %}
-            <title>Տնային</title>
-          {% endif %}
-        {% else %}
-          <title>Տնային</title>  
-        {% endif %}  
-    {% endif %}
+      <title>{% block title %} Տնային {% endblock %}</title>  
+    {% endif %} 
+
+    <!--- Google Stuff -->
+    <script data-ad-client="ca-pub-5804480621414645" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-189707038-1"></script>
+    <script>
+	    window.dataLayer = window.dataLayer || [];
+	    function gtag() {
+        dataLayer.push(arguments);
+      }
+		  gtag('js', new Date());
+		  gtag('config', 'UA-189707038-1');
+    </script>
 </head>
 <body>
     <header class="site-header">
@@ -72,12 +130,18 @@
                       <a class="nav-item nav-link" href="{% url 'user-posts' request.user.username %}">Իմ Հարցերը</a>
                       <a class="nav-item nav-link" href="{% url 'logout' %}">Դուրս Գալ</a>
                       <div class="nav-item nav-link">
-                        <div class="icon" id="bell"> 
-                          <img src="{% static 'blog/img/bell.png' %}" alt="">
-                          {% if not_counter > 0 %}
-                            <span class="num">{{ not_counter }}</span>
-                          {% endif %}  
-                        </div>
+                        {% if not_counter > 0 %}
+                          <button type="button" class="icon-button" id="bell">
+                            <span class="material-icons">notifications</span>
+                            <span class="icon-button__badge">{{ not_counter }}</span>
+                          </button>
+                        {% else %}
+                        <button type="button" class="icon-button" id="bell">
+                          <span class="material-icons">notifications</span>
+                        </button>
+                        {% endif %} 
+
+
                         <div class="notifications" id="box">
                           {% if not_counter %}
                             <h2>Ծանուցումներ - <span>{{ not_counter }}</span></h2>
@@ -123,10 +187,16 @@
                      </div>
                    {% endfor %}
                 {% endif %}
+		{% if user.is_authenticated %}
+		{% else %}
+		   <div class="alert alert-success">
+			   <a href="{% url 'register' %}">Գրանցվեք հարցեր տալու համար</a>
+		   </div>
+		{% endif %}
               {% block content %}{% endblock %}
             </div>
             <div class="col-md-4">
-              <div class="content-section">
+              <div class="content-section" id="billboard">
                 <h3>Ցուցատախտակ</h3>
                 <br/>
                   <ul class="list-group">
@@ -134,7 +204,7 @@
                       <a href="{% url 'best-posts' %}">Լավագույն հարցեր</a>
                     </li>
                     <li class="list-group-item list-group-item-light">
-                      <a href="http://127.0.0.1:8000/user/tnayin.am">Մրցույթներ</a>
+                      <a href="http://tnayin.com/user/tnayin.com">Մրցույթներ</a>
                     </li>
                     <li class="list-group-item list-group-item-light">
                       <a href="{% url 'leaderboard' %}">Լավագույնների Ցանկ</a>
@@ -147,48 +217,10 @@
     </main>
 
     <div class="container-fluid pb-0 mb-0 justify-content-center text-light ">
-      <footer>
-          <div class="row my-5 justify-content-center py-5">
-              <div class="col-11">
-                  <div class="row ">
-                      <div class="col-xl-8 col-md-4 col-sm-4 col-12 my-auto mx-auto a">
-                          <h3 class="text-muted mb-md-0 mb-5 bold-text">Մաթ Օգնություն</h3>
-                      </div>
-                      <div class="col-xl-2 col-md-4 col-sm-4 col-12">
-                          <h6 class="mb-3 mb-lg-4 bold-text "><b>Մենյու</b></h6>
-                          <ul class="list-unstyled">
-                              <a href="{% url 'blog-home' %}"><li class="mb-3 mb-lg-4 bold-text ">Գլխավոր Էջ</li></a>
-                              <a href="{% url 'blog-about' %}"><li class="mb-3 mb-lg-4 bold-text ">Մեր Մասին</li></a>
-                              <a href="https://www.youtube.com/c/MatOgnutyun/videos"><li class="mb-3 mb-lg-4 bold-text ">Տեսադարան</li></a>
-                          </ul>
-                      </div>
-                      <div class="col-xl-2 col-md-4 col-sm-4 col-12">
-                          <h6 class="mb-3 mb-lg-4 text-muted bold-text mt-sm-0 mt-5"><b>Կոնտակտային Տվյալներ</b></h6>
-                            <span><i class="fa fa-envelope" aria-hidden="true"></i></span><a href="mailto:matognutyun@gmail.com" class="mb-3 mb-lg-4 bold-text ">matognutyun@gmail.com</a></small>
-                      </div>
-                  </div>
-                  <div class="row ">
-                      <div class="col-xl-8 col-md-4 col-sm-4 col-auto my-md-0 mt-5 order-sm-1 order-3 align-self-end">
-                          <p class="social text-muted mb-0 pb-0 bold-text"> 
-                            <span class="mx-2">
-                              <a href="https://www.youtube.com/c/matognutyun"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                            </span> 
-                            <span class="mx-2">
-                              <a href="https://twitter.com/MatOgnutyun"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                            </span> 
-                            <span class="mx-2">
-                              <a href="https://www.instagram.com/matognutyun/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                            </span> 
-                          </p>
-                          <small class="rights">
-                            <span>&#174;</span> 2021 - Մաթ Օգնություն Բոլոր Իրավունքները Պաշտպանված են
-                          </small>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </footer>
-  </div>
+      <div id="like-section">
+        {% include 'blog/footer.html' %}
+      </div>
+    </div>
 
    <!-- Optional JavaScript -->
    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -198,6 +230,11 @@
    <script src=https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js></script>
    <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js></script>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
    <script src="{% static 'blog/js/main.js' %}"></script>
+   <script src="{% static 'blog/js/video-carousel.js' %}"></script>
+   <script src="{% static 'blog/js/button.js' %}"></script>
+   <script src="{% static 'blog/js/modal.js' %}"></script>
+   <script src="{% static 'blog/js/alert-messages.js' %}"></script>
 </body>
 </html>

@@ -1,9 +1,21 @@
 from django.urls import path
-from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView, \
-    CommentCreateView, CommentUpdateView, CommentDeleteView, like_post, like_comment, leaderboard, DeleteNotification, \
-        BestPosts
-from . import views
 from django.conf.urls import url
+
+from .views import PostListView, PostDetailView, PostCreateView, \
+                    PostUpdateView, PostDeleteView, UserPostListView, \
+                    CommentCreateView, CommentUpdateView, CommentDeleteView, \
+                    like_post, like_comment, leaderboard, DeleteNotification, \
+                    dislike_post, BestPosts 
+from . import views
+
+__author__ = "David Khachatryan"
+__copyright__ = "Copyright 2021, Mat Ognutyun"
+__credits__ = None
+__license__ = "GPL"
+__version__ = "2.0.0"
+__maintainer__ = "David Khachatryan"
+__email__ = "dkhachatryan@wisc.edu"
+__status__ = "Production"
 
 urlpatterns = [
     path('', PostListView.as_view(), name='blog-home'),
@@ -20,5 +32,6 @@ urlpatterns = [
     path('dnotification/<int:pk>/', DeleteNotification, name='d-notification'),
     path('best-posts', BestPosts, name='best-posts'),
     path('post/<int:pk>/like', like_post, name="like_post"),
+    path('post/<int:pk>/dislike', dislike_post, name="dislike_post"),
     path('post/<int:pk>/like-comment/<int:pk1>', like_comment, name="like_comment")
 ]

@@ -1,0 +1,54 @@
+{
+  "_from": "ckeditor-youtube-plugin",
+  "_id": "ckeditor-youtube-plugin@2.1.18",
+  "_inBundle": false,
+  "_integrity": "sha512-mjqskDdiR8+bBsapPqmqJAV3BOMhIaMsax5dpmwgJMUtBVdWbwa3cFWE4rhPf2+qHiOBmaxLMvTnTUhgmuMzSw==",
+  "_location": "/ckeditor-youtube-plugin",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "ckeditor-youtube-plugin",
+    "name": "ckeditor-youtube-plugin",
+    "escapedName": "ckeditor-youtube-plugin",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ckeditor-youtube-plugin/-/ckeditor-youtube-plugin-2.1.18.tgz",
+  "_shasum": "1ec818b7e3345051ee8e9cb3565cea4c29b8f053",
+  "_spec": "ckeditor-youtube-plugin",
+  "_where": "/home/david/Blog/static/ckeditor/ckeditor/plugins",
+  "author": {
+    "name": "fonini"
+  },
+  "bugs": {
+    "url": "https://github.com/fonini/ckeditor-youtube-plugin/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Youtube plugin for CKEditor",
+  "files": [
+    "youtube/",
+    "LICENSE.md",
+    "README.md",
+    "bower.json",
+    "package.json"
+  ],
+  "homepage": "https://github.com/fonini/ckeditor-youtube-plugin#readme",
+  "keywords": [
+    "CKEditor",
+    "youtube",
+    "embed"
+  ],
+  "name": "ckeditor-youtube-plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fonini/ckeditor-youtube-plugin.git"
+  },
+  "version": "2.1.18"
+}

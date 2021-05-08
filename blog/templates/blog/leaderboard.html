@@ -11,8 +11,8 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Անուն</th>
-        <th scope="col">Լավ Հարց</th>
         <th scope="col">Լավ Պատասխան</th>
+        <th scope="col">Լավ Հարց</th>
       </tr>
     </thead>
     {% for karma, user, comment_karma in leaderboard %}
@@ -20,8 +20,8 @@
         <tr>
             <th scope="row"><img class="rounded-circle article-img" src="{{ user|get_user_author_profile_img:'url' }}"></th>
             <td><a class="mr-2" href="{% url 'user-posts' user %}">{{ user }}</a></td>
-            <td>{{ karma }}</td>
             <td>{{ comment_karma }}</td>
+            <td>{{ karma }}</td>
         </tr>
         </tbody>
     {% endfor %}

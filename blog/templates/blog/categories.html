@@ -1,38 +1,55 @@
 {% extends "blog/base.html" %}
+
+{% block extra_head %} 
+	<meta name="description" content="Տնային առաջադրանքների լուծումներ {{cats}} առարկայից">
+{% endblock %}
+
+{% block title %} 
+	Հարցեր {{ cats }} առարկայից  
+{% endblock %}
+
 {% block content %}
 
     <h2>{{ cats }} <span class="badge badge-secondary"></span></h2>
     <br/>
 
-    {% for post in posts reversed %}
-        <article class="media content-section" id="clickable-article" data-submit-url="{% url 'post-detail' post.id %}">
-            <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
-            <div class="media-body">
-                <div class="article-metadata">
-                <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-                <small class="text-muted">{{ post.date_posted }} | {{ post.category }}</small>
-                </div>
-                <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }} </a></h2>
+    {% if posts %}
+    	{% for post in posts reversed %}
+            <article class="media content-section" id="clickable-article" data-submit-url="{% url 'post-detail' post.id %}">
+           	<img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+            	<div class="media-body">
+               	    <div class="article-metadata">
+                	<a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                	<small class="text-muted">{{ post.date_posted }} | {{ post.category }}</small>
+                    </div>
+                    <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }} </a></h2>
                 
-                <p class="article-content">{{ post.content|safe }}</p>
-            </div>
+                    <p class="article-content">{{ post.content|safe }}</p>
+                </div>
                 <br/><br/>
-        </article>
-        <article class="media content-section">
-            {% if post.likes.count <= 1 %}
-              {% if post.comments.count > 1 %}
-                <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխաններ</a>
-              {% else %}
-                <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխան</a>  
-              {% endif %}  
-            {% else %}  
-              {% if post.comments.count > 1 %}
-                <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխաններ</a>
-              {% else %}
-                <a class="comment" href="{% url 'post-detail' post.id %}">{{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխան</a>  
-              {% endif %}  
-            {% endif %}  
-          </article>
+       	    </article>
+            <article class="media content-section">
+            	{% if post.likes.count <= 1 %}
+             	 {% if post.comments.count > 1 %}
+                   <a class="comment" href="{% url 'post-detail' post.id %}">
+			   {{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխաններ</a>
+                 {% else %}
+                   <a class="comment" href="{% url 'post-detail' post.id %}">
+			   {{ post.likes.count }} հոգի հավանել է - {{ post.comments.count }} Պատասխան</a>  
+                 {% endif %}  
+                {% else %}  
+                 {% if post.comments.count > 1 %}
+                  <a class="comment" href="{% url 'post-detail' post.id %}">
+			  {{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխաններ</a>
+                 {% else %}
+                  <a class="comment" href="{% url 'post-detail' post.id %}">
+			  {{ post.likes.count }} հոգի հավանել են - {{ post.comments.count }} Պատասխան</a>  
+                 {% endif %}  
+                {% endif %}  
+            </article>
           <br/><br/>
-      {% endfor %}
+        {% endfor %}
+    {% else %}
+	<p>Դեռևս {{ cats }} առարկայից հարցեր չկան </p>
+    {% endif %}		
 {% endblock content %}
